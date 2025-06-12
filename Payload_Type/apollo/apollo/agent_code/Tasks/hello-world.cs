@@ -1,10 +1,10 @@
 #define COMMAND_NAME_UPPER
 
 #if DEBUG
-#define WHOAMI
+#define HELLOWORLD
 #endif
 
-#if WHOAMI
+#if HELLOWORLD
 
 using ApolloInterop.Classes;
 using ApolloInterop.Interfaces;
@@ -12,9 +12,9 @@ using ApolloInterop.Structs.MythicStructs;
 
 namespace Tasks
 {
-    public class whoami : Tasking
+    public class helloworld : Tasking
     {
-        public whoami(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
+        public helloworld(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
         {
         }
 
