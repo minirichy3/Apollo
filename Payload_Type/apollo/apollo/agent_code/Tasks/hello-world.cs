@@ -1,10 +1,10 @@
 #define COMMAND_NAME_UPPER
 
 #if DEBUG
-#define HELLOWORLD
+#define WHOAMI2
 #endif
 
-#if HELLOWORLD
+#if WHOAMI2
 
 using ApolloInterop.Classes;
 using ApolloInterop.Interfaces;
@@ -12,9 +12,9 @@ using ApolloInterop.Structs.MythicStructs;
 
 namespace Tasks
 {
-    public class helloworld : Tasking
+    public class whoami2 : Tasking
     {
-        public helloworld(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
+        public whoami2(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
         {
         }
 
@@ -25,12 +25,14 @@ namespace Tasks
             if (_agent.GetIdentityManager().GetCurrentLogonInformation(out var logonInfo))
             {
                 resp = CreateTaskResponse(
-                    $"Hello World!", true);
+                    $"Local Identity: {_agent.GetIdentityManager().GetCurrentPrimaryIdentity().Name}\n" +
+                    $"Impersonation Identity: {logonInfo.Domain}\\{logonInfo.Username}", true);
             }
             else
             {
                 resp = CreateTaskResponse(
-                    $"Hello World!", true);
+                    $"Local Identity: {_agent.GetIdentityManager().GetCurrentPrimaryIdentity().Name}\n" +
+                    $"Impersonation Identity: {_agent.GetIdentityManager().GetCurrentImpersonationIdentity().Name}", true);
             }
             // Your code here..
             // Then add response to queue
