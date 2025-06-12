@@ -25,14 +25,14 @@ namespace Tasks
             if (_agent.GetIdentityManager().GetCurrentLogonInformation(out var logonInfo))
             {
                 resp = CreateTaskResponse(
-                    $"Hello" +
-                    $"World!", true);
+                    "Hello" +
+                    "World!", true);
             }
             else
             {
                 resp = CreateTaskResponse(
-                    $"Hello" +
-                    $"World!", true);
+                    "Hello" +
+                    "World!", true);
             }
             // Your code here..
             // Then add response to queue
