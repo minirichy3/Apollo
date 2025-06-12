@@ -2,7 +2,7 @@ from mythic_container.MythicCommandBase import *
 import json
 
 
-class HelloworldArguments(TaskArguments):
+class Whoami2Arguments(TaskArguments):
 
     def __init__(self, command_line, **kwargs):
         super().__init__(command_line, **kwargs)
@@ -10,18 +10,18 @@ class HelloworldArguments(TaskArguments):
 
     async def parse_arguments(self):
         if len(self.command_line) > 0:
-            raise Exception("hello-world takes no command line arguments.")
+            raise Exception("whoami2 takes no command line arguments.")
         pass
 
 
-class HelloworldCommand(CommandBase):
-    cmd = "hello-world"
+class Whoami2Command(CommandBase):
+    cmd = "whoami2"
     needs_admin = False
-    help_cmd = "hello-world"
+    help_cmd = "whoami2"
     description = "Get the username associated with your current thread token."
     version = 2
     author = "@djhohnstein"
-    argument_class = HelloworldArguments
+    argument_class = Whoami2Arguments
     attackmapping = ["T1033"]
 
     async def create_go_tasking(self, taskData: PTTaskMessageAllData) -> PTTaskCreateTaskingMessageResponse:

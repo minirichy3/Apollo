@@ -1,10 +1,10 @@
 #define COMMAND_NAME_UPPER
 
 #if DEBUG
-#define HELLOWORLD
+#define WHOAMI
 #endif
 
-#if HELLOWORLD
+#if WHOAMI
 
 using ApolloInterop.Classes;
 using ApolloInterop.Interfaces;
@@ -12,9 +12,9 @@ using ApolloInterop.Structs.MythicStructs;
 
 namespace Tasks
 {
-    public class helloworld : Tasking
+    public class whoami : Tasking
     {
-        public helloworld(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
+        public whoami(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
         {
         }
 
@@ -22,7 +22,7 @@ namespace Tasks
         public override void Start()
         {
             MythicTaskResponse resp;
-             if (_agent.GetIdentityManager().GetCurrentLogonInformation(out var logonInfo))
+            if (_agent.GetIdentityManager().GetCurrentLogonInformation(out var logonInfo))
             {
                 resp = CreateTaskResponse(
                     $"Local Identity: {_agent.GetIdentityManager().GetCurrentPrimaryIdentity().Name}\n" +
