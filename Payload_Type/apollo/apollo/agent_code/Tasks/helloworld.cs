@@ -12,9 +12,9 @@ using ApolloInterop.Structs.MythicStructs;
 
 namespace Tasks
 {
-    public class hello_world : Tasking
+    public class helloworld : Tasking
     {
-        public hello_world(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
+        public helloworld(IAgent agent, ApolloInterop.Structs.MythicStructs.MythicTask data) : base(agent, data)
         {
         }
 

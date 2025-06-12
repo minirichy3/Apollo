@@ -10,14 +10,14 @@ class HelloWorldArguments(TaskArguments):
 
     async def parse_arguments(self):
         if len(self.command_line) > 0:
-            raise Exception("hello_world takes no command line arguments.")
+            raise Exception("helloworld takes no command line arguments.")
         pass
 
 
 class HelloWorldCommand(CommandBase):
-    cmd = "hello_world"
+    cmd = "helloworld"
     needs_admin = False
-    help_cmd = "hello_world"
+    help_cmd = "helloworld"
     description = "Get the username associated with your current thread token."
     version = 2
     author = "@djhohnstein"
