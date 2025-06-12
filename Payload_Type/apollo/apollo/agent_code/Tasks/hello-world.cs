@@ -22,17 +22,17 @@ namespace Tasks
         public override void Start()
         {
             MythicTaskResponse resp;
-            if (_agent.GetIdentityManager().GetCurrentLogonInformation(out var logonInfo))
+             if (_agent.GetIdentityManager().GetCurrentLogonInformation(out var logonInfo))
             {
                 resp = CreateTaskResponse(
-                    "Hello" +
-                    "World!", true);
+                    $"Local Identity: {_agent.GetIdentityManager().GetCurrentPrimaryIdentity().Name}\n" +
+                    $"Impersonation Identity: {logonInfo.Domain}\\{logonInfo.Username}", true);
             }
             else
             {
                 resp = CreateTaskResponse(
-                    "Hello" +
-                    "World!", true);
+                    $"Local Identity: {_agent.GetIdentityManager().GetCurrentPrimaryIdentity().Name}\n" +
+                    $"Impersonation Identity: {_agent.GetIdentityManager().GetCurrentImpersonationIdentity().Name}", true);
             }
             // Your code here..
             // Then add response to queue
