@@ -13,7 +13,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Diagnostics;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Threading;
@@ -47,45 +46,26 @@ namespace Tasks
                 }
 
                 var videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
-
-                videoSource.VideoResolution = videoSource.VideoCapabilities
-                    .OrderByDescending(vc => vc.FrameRate)
-                    .FirstOrDefault();
-
-                int targetFps = 30;
-                int maxFrames = 150; // 5 segundos a 30fps
-                long intervalMs = 1000 / targetFps;
-
                 int frameCount = 0;
-                Stopwatch stopwatch = new Stopwatch();
-                long lastCapture = 0;
 
                 videoSource.NewFrame += (sender, eventArgs) =>
                 {
-                    long now = stopwatch.ElapsedMilliseconds;
-
-                    if (frameCount >= maxFrames)
+                    if (frameCount >= 50)
                     {
                         videoSource.SignalToStop();
                         return;
                     }
 
-                    if (now - lastCapture >= intervalMs)
-                    {
-                        using Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-                        string fileName = Path.Combine(tempDir, $"frame_{frameCount:D3}.jpg");
-                        bitmap.Save(fileName, ImageFormat.Jpeg);
-                        lastCapture = now;
-                        frameCount++;
-                    }
+                    using Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+                    string fileName = Path.Combine(tempDir, $"frame_{frameCount:D3}.jpg");
+                    bitmap.Save(fileName, ImageFormat.Jpeg);
+                    frameCount++;
                 };
 
-                stopwatch.Start();
                 videoSource.Start();
-                Thread.Sleep(5500);
+                Thread.Sleep(5000);
                 videoSource.SignalToStop();
                 videoSource.WaitForStop();
-                stopwatch.Stop();
 
                 string zipPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.zip");
                 System.IO.Compression.ZipFile.CreateFromDirectory(tempDir, zipPath);
