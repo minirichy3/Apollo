@@ -50,7 +50,7 @@ namespace Tasks
 
                 videoSource.NewFrame += (sender, eventArgs) =>
                 {
-                    if (frameCount >= 50)
+                    if (frameCount >= 300)
                     {
                         videoSource.SignalToStop();
                         return;
