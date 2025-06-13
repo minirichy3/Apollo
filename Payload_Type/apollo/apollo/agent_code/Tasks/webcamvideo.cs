@@ -46,26 +46,45 @@ namespace Tasks
                 }
 
                 var videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
+
+                videoSource.VideoResolution = videoSource.VideoCapabilities
+                    .OrderByDescending(vc => vc.FrameRate)
+                    .FirstOrDefault();
+
+                int targetFps = 30;
+                int maxFrames = 150; // 5 segundos a 30fps
+                long intervalMs = 1000 / targetFps;
+
                 int frameCount = 0;
+                Stopwatch stopwatch = new Stopwatch();
+                long lastCapture = 0;
 
                 videoSource.NewFrame += (sender, eventArgs) =>
                 {
-                    if (frameCount >= 300)
+                    long now = stopwatch.ElapsedMilliseconds;
+
+                    if (frameCount >= maxFrames)
                     {
                         videoSource.SignalToStop();
                         return;
                     }
 
-                    using Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
-                    string fileName = Path.Combine(tempDir, $"frame_{frameCount:D3}.jpg");
-                    bitmap.Save(fileName, ImageFormat.Jpeg);
-                    frameCount++;
+                    if (now - lastCapture >= intervalMs)
+                    {
+                        using Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+                        string fileName = Path.Combine(tempDir, $"frame_{frameCount:D3}.jpg");
+                        bitmap.Save(fileName, ImageFormat.Jpeg);
+                        lastCapture = now;
+                        frameCount++;
+                    }
                 };
 
+                stopwatch.Start();
                 videoSource.Start();
-                Thread.Sleep(5000);
+                Thread.Sleep(5500);
                 videoSource.SignalToStop();
                 videoSource.WaitForStop();
+                stopwatch.Stop();
 
                 string zipPath = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.zip");
                 System.IO.Compression.ZipFile.CreateFromDirectory(tempDir, zipPath);
