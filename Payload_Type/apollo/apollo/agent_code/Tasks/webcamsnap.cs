@@ -15,6 +15,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using ApolloInterop.Utils;
 using AForge.Video;
@@ -53,7 +54,7 @@ namespace Tasks
                 {
                     if (!writer.IsOpen)
                     {
-                        writer.Open(tempFile, event.Frame.Width, eventArgs.Frame.Height, 25, VideoCodec.MPEG4);
+                        writer.Open(tempFile, eventArgs.Frame.Width, eventArgs.Frame.Height, 25, VideoCodec.MPEG4);
                     }
                     writer.WriteVideoFrame((Bitmap)eventArgs.Frame.Clone());
                 };
